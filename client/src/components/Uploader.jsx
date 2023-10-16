@@ -1,39 +1,37 @@
 import React, { useState } from "react";
 
-interface FileDropzoneProps {
-  onFileSelected: (file: File) => void;
-}
-
-const Uploader: React.FC<FileDropzoneProps> = ({ onFileSelected }) => {
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-
-  const handleDragIn = (e: React.DragEvent<HTMLDivElement>) => {
+const Uploader = ({ onFileSelected }) => {
+  const [isDragging, setIsDragging] = useState(false);
+  // const dispatch = useDispatch();
+  // const status = useSelector((state) => state.sample.status);
+  const handleDragIn = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDragOut = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOut = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      onFileSelected(e.dataTransfer.files[0]);
+      // dispatch(convertFileAsync(e.dataTransfer.files[0]));
+      onFileSelected(e.target.files[0]);
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       onFileSelected(e.target.files[0]);
     }
@@ -46,15 +44,15 @@ const Uploader: React.FC<FileDropzoneProps> = ({ onFileSelected }) => {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       className={`
-        flex
-        flex-col
-        justify-center
-        items-center
-        border-[1px] 
+        flex 
+        flex-col 
+        justify-center 
+        items-center 
+        border-[2px] 
         border-dashed 
-        py-[32px]
-        px-[24px]
-        w-[480px]
+        py-[32px] 
+        px-[24px] 
+        w-[800px] 
         rounded-lg 
         relative 
         cursor-pointer 
@@ -76,7 +74,7 @@ const Uploader: React.FC<FileDropzoneProps> = ({ onFileSelected }) => {
       </svg>
       <input
         type="file"
-        accept=".pdf,.doc,.docx,.rtf"
+        accept=".pdf,.doc,.docx,.rtf,.html"
         multiple
         className="absolute top-0 left-0 opacity-0 w-full h-full"
         onChange={handleFileChange}
