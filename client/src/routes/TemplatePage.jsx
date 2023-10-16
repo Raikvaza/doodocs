@@ -2,10 +2,24 @@ import { useSelector } from "react-redux";
 import InputField from "../components/forms/InputField";
 import TemplateFiller from "../components/TemplateFiller";
 import { useState } from "react";
+import Appbar from "../components/Appbar";
 const TemplatePage = () => {
   const templates = useSelector((state) => state.templates.data);
   const fields = useSelector((state) => state.fields.data);
   const [inputValues, setInputValues] = useState({});
+  const [focusedField, setFocusedField] = useState(null);
+  const [filledFields, setFilledFields] = useState([]);
+
+  const handleFilled = (itemId, isFilled) => {
+    isFilled
+      ? setFilledFields((prevFields) => [...prevFields, itemId])
+      : setFilledFields((prevFields) =>
+          prevFields.filter((item) => item !== itemId)
+        );
+  };
+  const handleFocusField = (itemId) => {
+    setFocusedField(itemId);
+  };
   const handleInputChange = (id, value) => {
     setInputValues((prevVal) => ({
       ...prevVal,
@@ -16,7 +30,6 @@ const TemplatePage = () => {
     // Root-box
     <div
       className="
-        bg-red-400
         flex
         flex-row
         w-[100vw]
@@ -29,39 +42,29 @@ const TemplatePage = () => {
             flex-col
             max-h-screen
             w-3/4
-            bg-blue-200
         "
       >
         {/* Left-container header */}
-        <div
-          className="
-                bg-green-400
-                flex-0
-                shrink-1
-                basis-[40px]
-            "
-        >
-          Appbar
-        </div>
+        <Appbar />
         {/* Left-container templates */}
         <div
           className="
                 flex-1
                 shrink-0
                 h-full
-                bg-red-200
                 overflow-auto
                 "
         >
-          {templates.map((template) => {
+          {templates.map((template, index) => {
             return (
-              <>
-                <TemplateFiller
-                  html={template}
-                  fields={fields}
-                  inputValues={inputValues}
-                />
-              </>
+              <TemplateFiller
+                html={template}
+                key={index}
+                fields={fields}
+                inputValues={inputValues}
+                focusedField={focusedField}
+                filledFields={filledFields}
+              />
             );
           })}
         </div>
@@ -69,7 +72,6 @@ const TemplatePage = () => {
       {/* Right-container fields */}
       <div
         className="
-            bg-green-200
             w-1/4
             flex
             flex-col
@@ -89,6 +91,7 @@ const TemplatePage = () => {
             className="
                 text-[16px]
                 font-semibold
+                mb-1
             "
           >
             Пожалуйста, заполните данные
@@ -120,6 +123,8 @@ const TemplatePage = () => {
               key={item.id}
               fieldData={item}
               onChange={(e) => handleInputChange(item.id, e.target.value)}
+              onFocusChange={handleFocusField}
+              onFilled={handleFilled}
             />
           ))}
         </div>

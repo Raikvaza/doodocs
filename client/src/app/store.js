@@ -1,11 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
-import templateReducer from "../features/templates/templateSlice";
-import fieldsReducer from "../features/fields/fieldsSlice";
-const store = configureStore({
-  reducer: {
-    templates: templateReducer,
-    fields: fieldsReducer,
-  },
-});
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import { persistedAuthReducer } from "./config";
 
+const store = configureStore({
+  reducer: persistedAuthReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+export let persistor = persistStore(store);
 export default store;
