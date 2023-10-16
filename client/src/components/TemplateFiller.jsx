@@ -20,25 +20,17 @@ function TemplateFiller({ html }) {
   return (
     <div
       className="
-        flex
-        flex-col
-        h-full
-        items-center
-        justify-center
-        pt-[64px]
-        bg-red-200
-      "
-    >
-      <div
-        className="
           w-[800px] 
+          bg-white
           h-[1124px]
-          border
+          my-16
+          mx-auto
+          border 
+          p-16
           border-[#90959D]
       "
-      >
-        <iframe srcDoc={fileContent} className="w-full h-full"></iframe>
-      </div>
+    >
+      <iframe srcDoc={fileContent} className="w-full h-full"></iframe>
     </div>
   );
 }

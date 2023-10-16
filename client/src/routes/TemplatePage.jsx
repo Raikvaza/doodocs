@@ -13,15 +13,15 @@ const TemplatePage = () => {
         bg-red-400
         flex
         flex-row
-        max-h-screen
         w-[100vw]
-  "
+        "
     >
       {/* Left-container */}
       <div
         className="
             flex
             flex-col
+            max-h-screen
             w-3/4
             bg-blue-200
         "
@@ -42,11 +42,18 @@ const TemplatePage = () => {
           className="
                 flex-1
                 shrink-0
+                h-full
+                bg-red-200
                 overflow-auto
-            "
+                "
         >
           {templates.map((template) => {
-            return <TemplateFiller html={template} />;
+            return (
+              <>
+                <TemplateFiller html={template} />
+                <TemplateFiller html={template} />
+              </>
+            );
           })}
         </div>
       </div>

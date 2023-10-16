@@ -3,7 +3,13 @@ import React from "react";
 function InputField({ fieldData, onChange }) {
   return (
     <div className="w-full">
-      <label className="block mb-2">{fieldData.name}</label>
+      <label
+        className="
+            text-[14px]
+        "
+      >
+        {fieldData.name}
+      </label>
       <input
         type="text"
         required={fieldData.is_required}
