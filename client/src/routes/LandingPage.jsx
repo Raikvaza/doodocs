@@ -8,6 +8,7 @@ import TextAreaInput from "../components/forms/TextAreaInput";
 const Landing = () => {
   const templates = useSelector((state) => state.templates.data[0]);
   const fields = useSelector((state) => state.fields.data);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleFilesSelected = (files) => {

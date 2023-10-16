@@ -6,10 +6,13 @@ const Button = ({ disabled, label, onSubmit }) => {
         px-4 
         py-2 
         mt-4 
-        bg-blue-500  
-        text-white 
-        rounded 
-        ${disabled ? "bg-gray-300 cursor-not-allowed" : "hover:bg-blue-600"}
+        rounded
+        border
+        ${
+          disabled
+            ? "bg-gray-background border-gray-border cursor-not-allowed text-disabled-text"
+            : "bg-button-base text-white active:bg-button-active hover:bg-button-hover"
+        }
         `}
       disabled={disabled}
       onClick={(e) => onSubmit(e)}

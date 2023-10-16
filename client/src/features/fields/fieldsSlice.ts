@@ -16,7 +16,9 @@ const fieldsSlice = createSlice({
   initialState,
   reducers: {
     setFields: (state, action) => {
-      state.data = JSON.parse(action.payload);
+      //TODO need to check for the validity of the incoming data
+      action.payload && (state.data = JSON.parse(action.payload));
+      !action.payload && (state.data = "");
       state.error = null;
     },
     setFieldsError: (state, action) => {

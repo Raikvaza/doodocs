@@ -34,20 +34,24 @@ export const uploadFiles = createAsyncThunk<ApiResponse<string[]>, File[]>(
       });
     };
 
-    try {
-      const fileContents = await Promise.all(
-        files.map((file) => {
-          return readFile(file);
-        })
-      );
-      return {
-        status: "success",
-        message: "Files uploaded successfully",
-        data: fileContents,
-      };
-    } catch (error) {
-      throw new Error("Failed to read files");
-    }
+    return new Promise<ApiResponse<string[]>>((resolve, reject) => {
+      setTimeout(async () => {
+        try {
+          const fileContents = await Promise.all(
+            files.map((file) => {
+              return readFile(file);
+            })
+          );
+          resolve({
+            status: "success",
+            message: "Files uploaded successfully",
+            data: fileContents,
+          });
+        } catch (error) {
+          reject(new Error("Failed to read files"));
+        }
+      }, 500); // 0.5 seconds delay simulation
+    });
   }
 );
 
@@ -64,11 +68,16 @@ const templateSlice = createSlice({
     setTemplateError: (state, action) => {
       state.error = action.payload;
     },
+    deleteLatestFile: (state) => {
+      state.data.pop();
+      state.status = "idle";
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(uploadFiles.pending, (state) => {
         state.status = "pending";
+        console.log("ASDASD");
       })
       .addCase(
         uploadFiles.fulfilled,
@@ -88,6 +97,10 @@ const templateSlice = createSlice({
   },
 });
 
-export const { setTemplate, setTemplateStatus, setTemplateError } =
-  templateSlice.actions;
+export const {
+  setTemplate,
+  setTemplateStatus,
+  setTemplateError,
+  deleteLatestFile,
+} = templateSlice.actions;
 export default templateSlice.reducer;
