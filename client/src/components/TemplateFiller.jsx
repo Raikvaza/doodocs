@@ -1,22 +1,44 @@
 import { useEffect, useState } from "react";
 
-function TemplateFiller({ html }) {
+function TemplateFiller({ html, fields, inputValues }) {
   const [fileContent, setFileContent] = useState("");
+
   useEffect(() => {
-    if (html && html.type === "text/html") {
-      const reader = new FileReader();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const styleElement = doc.createElement("style");
+    styleElement.textContent = `
+      .interactiveField {
+        background-color: #CFD2FF;
+        transition: background-color 0.3s ease;
+      }
+      .interactiveField:hover {
+        background-color: #DFE1FF;
+      }
+      .interactiveField.filled {
+        background-color: #FFFFFF;
+        border: 1px solid #9499E8;
+      }
+      .interactiveField.active {
+        background-color: #0085FF;
+      }
+    `;
+    doc.head.appendChild(styleElement);
+    fields &&
+      fields.map((field) => {
+        const elements = doc.querySelectorAll(`[class="${field.id}"]`);
+        elements &&
+          elements.forEach((element) => {
+            element.textContent = inputValues[field.id] || field.name;
+            element.classList.add("interactiveField");
+          });
+      });
 
-      reader.onload = (event) => {
-        setFileContent(event.target.result);
-      };
+    const serializer = new XMLSerializer();
+    const updatedHtml = serializer.serializeToString(doc);
 
-      reader.onerror = (error) => {
-        console.error("Error reading file:", error);
-      };
-
-      reader.readAsText(html);
-    }
-  }, [html]);
+    setFileContent(updatedHtml);
+  }, [html, fields, inputValues]);
   return (
     <div
       className="

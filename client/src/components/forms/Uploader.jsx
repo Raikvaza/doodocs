@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Uploader = ({ onFileSelected }) => {
+const Uploader = ({ onFilesSelected }) => {
   const [isDragging, setIsDragging] = useState(false);
   // const dispatch = useDispatch();
   // const status = useSelector((state) => state.sample.status);
@@ -26,14 +26,15 @@ const Uploader = ({ onFileSelected }) => {
     e.stopPropagation();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      // dispatch(convertFileAsync(e.dataTransfer.files[0]));
-      onFileSelected(e.target.files[0]);
+      const filesArray = Array.from(e.dataTransfer.files);
+      onFilesSelected(filesArray);
     }
   };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      onFileSelected(e.target.files[0]);
+      const filesArray = Array.from(e.target.files);
+      onFilesSelected(filesArray);
     }
   };
 
@@ -83,7 +84,7 @@ const Uploader = ({ onFileSelected }) => {
         <p className="text-[14px] mb-2">
           Выберите файл или перенесите его сюда
         </p>
-        <p className="text-[12px] text-[#6B6F76] text-gray-600">
+        <p className="text-[12px] text-[#6B6F76">
           Можно выбрать несколько файлов: pdf, doc, docx, rtf
         </p>
       </div>

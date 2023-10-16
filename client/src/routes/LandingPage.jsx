@@ -1,19 +1,17 @@
-import Uploader from "../components/Uploader";
+import Uploader from "../components/forms/Uploader";
 import Button from "../components/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadFile } from "../features/templates/templateSlice";
+import { uploadFiles } from "../features/templates/templateSlice";
 import { setFields } from "../features/fields/fieldsSlice";
 import { useNavigate } from "react-router-dom";
-import TextAreaInput from "../components/TextAreaInput";
-
+import TextAreaInput from "../components/forms/TextAreaInput";
 const Landing = () => {
   const templates = useSelector((state) => state.templates.data[0]);
   const fields = useSelector((state) => state.fields.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleFileSelected = (file) => {
-    dispatch(uploadFile(file));
-    // console.log("Selected file:", file.name);
+  const handleFilesSelected = (files) => {
+    dispatch(uploadFiles(files));
   };
   const handleNewFields = (newFields) => {
     dispatch(setFields(newFields));
@@ -21,8 +19,7 @@ const Landing = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(templates);
-    console.log(fields);
+    //TODO change the attributes within spans
     if (templates && fields) {
       navigate("/template-filler");
     }
@@ -43,7 +40,7 @@ const Landing = () => {
             gap-[24px]
           "
       >
-        <Uploader onFileSelected={handleFileSelected} />
+        <Uploader onFilesSelected={handleFilesSelected} />
         <TextAreaInput onFieldsChanged={handleNewFields} />
         <Button
           label="Далее"

@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ApiResponse } from "../../types/api";
 import { PayloadAction } from "@reduxjs/toolkit";
 interface TemplateState {
-  data: File[];
+  data: string[];
   status: "idle" | "pending" | "succeeded" | "rejected";
   error: string | undefined;
 }
@@ -14,23 +14,40 @@ const initialState: TemplateState = {
   error: undefined,
 };
 
-export const uploadFile = createAsyncThunk<ApiResponse<File>, File>(
-  "template/uploadFile",
-  async (file) => {
-    const response = await new Promise<ApiResponse<File>>((resolve, reject) => {
-      setTimeout(() => {
-        if (file) {
-          resolve({
-            status: "success",
-            message: "File uploaded successfully",
-            data: file,
-          });
-        } else {
-          reject(new Error("Failed to upload file"));
-        }
-      }, 3000); // Api simulation
-    });
-    return response;
+export const uploadFiles = createAsyncThunk<ApiResponse<string[]>, File[]>(
+  "template/uploadFiles",
+  async (files) => {
+    const readFile = (file: File): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target) {
+            resolve(event.target.result as string);
+          } else {
+            reject(new Error("Event target is null"));
+          }
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+        reader.readAsText(file);
+      });
+    };
+
+    try {
+      const fileContents = await Promise.all(
+        files.map((file) => {
+          return readFile(file);
+        })
+      );
+      return {
+        status: "success",
+        message: "Files uploaded successfully",
+        data: fileContents,
+      };
+    } catch (error) {
+      throw new Error("Failed to read files");
+    }
   }
 );
 
@@ -50,18 +67,18 @@ const templateSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(uploadFile.pending, (state) => {
+      .addCase(uploadFiles.pending, (state) => {
         state.status = "pending";
       })
       .addCase(
-        uploadFile.fulfilled,
-        (state, action: PayloadAction<ApiResponse<File>>) => {
+        uploadFiles.fulfilled,
+        (state, action: PayloadAction<ApiResponse<string[]>>) => {
           state.status = "succeeded";
-          state.data = [action.payload.data];
+          state.data = action.payload.data;
           state.error = undefined;
         }
       )
-      .addCase(uploadFile.rejected, (state, action) => {
+      .addCase(uploadFiles.rejected, (state, action) => {
         state.status = "rejected";
         if (action.error) {
           state.error = action.error.message;

@@ -4,10 +4,10 @@ interface ApiResponse<T> {
   data: T;
 }
 
-interface ApiErrorResponse {
-  status: "error";
-  errorMessage: string;
-  errorCode?: number;
-}
+// interface ApiErrorResponse {
+//   status: "error";
+//   errorMessage: string;
+//   errorCode?: number;
+// }
 
-export type { ApiResponse, ApiErrorResponse };
+export type { ApiResponse };

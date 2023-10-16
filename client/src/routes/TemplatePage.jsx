@@ -1,11 +1,17 @@
 import { useSelector } from "react-redux";
-import InputField from "../components/InputField";
+import InputField from "../components/forms/InputField";
 import TemplateFiller from "../components/TemplateFiller";
-
+import { useState } from "react";
 const TemplatePage = () => {
   const templates = useSelector((state) => state.templates.data);
   const fields = useSelector((state) => state.fields.data);
-
+  const [inputValues, setInputValues] = useState({});
+  const handleInputChange = (id, value) => {
+    setInputValues((prevVal) => ({
+      ...prevVal,
+      [id]: value,
+    }));
+  };
   return (
     // Root-box
     <div
@@ -50,8 +56,11 @@ const TemplatePage = () => {
           {templates.map((template) => {
             return (
               <>
-                <TemplateFiller html={template} />
-                <TemplateFiller html={template} />
+                <TemplateFiller
+                  html={template}
+                  fields={fields}
+                  inputValues={inputValues}
+                />
               </>
             );
           })}
@@ -107,7 +116,11 @@ const TemplatePage = () => {
             "
         >
           {fields.map((item) => (
-            <InputField key={item.id} fieldData={item} />
+            <InputField
+              key={item.id}
+              fieldData={item}
+              onChange={(e) => handleInputChange(item.id, e.target.value)}
+            />
           ))}
         </div>
       </div>
